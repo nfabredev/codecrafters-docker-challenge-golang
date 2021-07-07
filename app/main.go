@@ -23,5 +23,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(outb.String(), errb.String())
+	fmt.Print(outb.String(), errb.String())
 }
