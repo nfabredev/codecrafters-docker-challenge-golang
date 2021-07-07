@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"bytes"
+	"log"
 )
 
 // Usage: your_docker.sh run <image> <command> <arg1> <arg2> ...
@@ -14,11 +16,12 @@ func main() {
 	args := os.Args[4:len(os.Args)]
 
 	cmd := exec.Command(command, args...)
-	output, err := cmd.Output()
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+	err := cmd.Run()
 	if err != nil {
-		fmt.Printf("Err: %v", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
-
-	fmt.Println(string(output))
+	fmt.Println(outb.String(), errb.String())
 }
