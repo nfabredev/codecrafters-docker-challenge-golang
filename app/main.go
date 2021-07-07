@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
-	"bytes"
-	"log"
+	"syscall"
 )
 
 // Usage: your_docker.sh run <image> <command> <arg1> <arg2> ...
@@ -14,14 +14,17 @@ func main() {
 
 	command := os.Args[3]
 	args := os.Args[4:len(os.Args)]
+	var waitStatus syscall.WaitStatus
 
 	cmd := exec.Command(command, args...)
 	var outb, errb bytes.Buffer
 	cmd.Stdout = &outb
 	cmd.Stderr = &errb
-	err := cmd.Run()
-	if err != nil {
-		log.Fatal(err)
+	if err := cmd.Run(); err != nil {
+		if exitError, ok := err.(*exec.ExitError); ok {
+			waitStatus = exitError.Sys().(syscall.WaitStatus)
+			fmt.Print(waitStatus.ExitStatus())
+		}
 	}
 	fmt.Print(outb.String())
 	fmt.Fprintf(os.Stderr, errb.String())
