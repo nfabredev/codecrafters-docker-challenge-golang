@@ -23,5 +23,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Print(outb.String(), errb.String())
+	fmt.Print(outb.String())
+	fmt.Fprintf(os.Stderr, errb.String())
 }
