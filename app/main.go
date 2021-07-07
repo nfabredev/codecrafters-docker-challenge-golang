@@ -23,7 +23,7 @@ func main() {
 	if err := cmd.Run(); err != nil {
 		if exitError, ok := err.(*exec.ExitError); ok {
 			waitStatus = exitError.Sys().(syscall.WaitStatus)
-			fmt.Print(waitStatus.ExitStatus())
+			os.Exit(waitStatus.ExitStatus())
 		}
 	}
 	fmt.Print(outb.String())
