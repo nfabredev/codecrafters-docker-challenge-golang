@@ -52,6 +52,13 @@ func main() {
 	cmd.Stdout = &outbuf
 	cmd.Stderr = &errbuf
 
+	// request a new PID namespace
+	// http://man7.org/linux/man-pages/man7/pid_namespaces.7.html
+	// https://medium.com/@teddyking/namespaces-in-go-basics-e3f0fc1ff69a
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+        Cloneflags: syscall.CLONE_NEWPID,
+	}
+
 	// run the command
 	if err := cmd.Run(); err != nil {
 		// if there's an error, print the command's output
